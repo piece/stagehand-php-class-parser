@@ -85,29 +85,8 @@ class Stagehand_PHP_Class_Parser
     public static function parse($filename)
     {
         $lexer = new Stagehand_PHP_Lexer($filename);
-        $filter = new Stagehand_PHP_Class_Parser_Filter();
 
-        $parser = new Stagehand_PHP_Parser($lexer, $filter);
-        $parser->parse();
-
-        $classes = $filter->getClasses();
-
-        $code = $filter->getExternalCode();
-        if ($code) {
-            $class = $filter->getCurrentClass();
-            $class->setPostCode($code);
-            $filter->setExternalCode('');
-        }
-
-        if (!count($classes)) {
-            return;
-        }
-
-        if (count($classes) == 1) {
-            return $classes[0];
-        }
-
-        return $classes;
+        return self::_parse($lexer);
     }
 
     // }}}
@@ -123,6 +102,27 @@ class Stagehand_PHP_Class_Parser
     {
         $lexer = new Stagehand_PHP_Lexer();
         $lexer->setContents($contents);
+
+        return self::_parse($lexer);
+    }
+
+    /**#@-*/
+
+    /**#@+
+     * @access protected
+     */
+
+    // }}}
+    // {{{ _parse()
+
+    /**
+     * Parses PHP classes.
+     *
+     * @param mixed $lexer   A lexical analyzer for Stagehand_PHP_Parser
+     * @return mixed
+     */
+    protected static function _parse($lexer)
+    {
         $filter = new Stagehand_PHP_Class_Parser_Filter();
 
         $parser = new Stagehand_PHP_Parser($lexer, $filter);
@@ -147,12 +147,6 @@ class Stagehand_PHP_Class_Parser
 
         return $classes;
     }
-
-    /**#@-*/
-
-    /**#@+
-     * @access protected
-     */
 
     /**#@-*/
 
