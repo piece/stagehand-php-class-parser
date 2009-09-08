@@ -32,21 +32,21 @@
  * @copyright  2009 KUMAKURA Yousuke <kumatch@gmail.com>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
- * @since      File available since Release 0.1.0
+ * @since      File available since Release 0.2.0
  */
 
-// {{{ Stagehand_PHP_Class_Parser
+// {{{ Stagehand_PHP_Class_ParserTest
 
 /**
- * A class for parsing PHP class.
+ * Some tests for Stagehand_PHP_Class_Parser
  *
  * @package    stagehand-php-class-parser
  * @copyright  2009 KUMAKURA Yousuke <kumatch@gmail.com>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
- * @since      Class available since Release 0.1.0
+ * @since      Class available since Release 0.2.0
  */
-class Stagehand_PHP_Class_Parser
+class Stagehand_PHP_Class_ParserTest extends PHPUnit_Framework_TestCase
 {
 
     // {{{ properties
@@ -73,79 +73,37 @@ class Stagehand_PHP_Class_Parser
      * @access public
      */
 
-    // }}}
-    // {{{ parse()
+    public function setUp() { }
+
+    public function tearDown() { }
 
     /**
-     * Parses PHP classes from file.
-     *
-     * @param string $filename  a filename of PHP script.
-     * @return mixed
+     * @test
      */
-    public static function parse($filename)
+    public function parseFromFile()
     {
-        $lexer = new Stagehand_PHP_Lexer($filename);
-        $filter = new Stagehand_PHP_Class_Parser_Filter();
+        $class = Stagehand_PHP_Class_Parser::parse(__FILE__);
 
-        $parser = new Stagehand_PHP_Parser($lexer, $filter);
-        $parser->parse();
-
-        $classes = $filter->getClasses();
-
-        $code = $filter->getExternalCode();
-        if ($code) {
-            $class = $filter->getCurrentClass();
-            $class->setPostCode($code);
-            $filter->setExternalCode('');
-        }
-
-        if (!count($classes)) {
-            return;
-        }
-
-        if (count($classes) == 1) {
-            return $classes[0];
-        }
-
-        return $classes;
+        $this->assertType('Stagehand_PHP_Class', $class);
+        $this->assertEquals($class->getName(), __CLASS__);
     }
 
-    // }}}
-    // {{{ parseContents()
-
     /**
-     * Parses PHP classes from text contents.
-     *
-     * @param string $contents  PHP script contents.
-     * @return mixed
+     * @test
      */
-    public static function parseContents($contents)
+    public function parseFromTextContents()
     {
-        $lexer = new Stagehand_PHP_Lexer();
-        $lexer->setContents($contents);
-        $filter = new Stagehand_PHP_Class_Parser_Filter();
+        $contents = <<<CONTENTS
+<?php
+class Stagehand_PHP_Class_ParserTest_TextContents
+{
+}
+CONTENTS;
 
-        $parser = new Stagehand_PHP_Parser($lexer, $filter);
-        $parser->parse();
+        $class = Stagehand_PHP_Class_Parser::parseContents($contents);
 
-        $classes = $filter->getClasses();
-
-        $code = $filter->getExternalCode();
-        if ($code) {
-            $class = $filter->getCurrentClass();
-            $class->setPostCode($code);
-            $filter->setExternalCode('');
-        }
-
-        if (!count($classes)) {
-            return;
-        }
-
-        if (count($classes) == 1) {
-            return $classes[0];
-        }
-
-        return $classes;
+        $this->assertType('Stagehand_PHP_Class', $class);
+        $this->assertEquals($class->getName(), 'Stagehand_PHP_Class_ParserTest_TextContents');
     }
 
     /**#@-*/
