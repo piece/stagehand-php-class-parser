@@ -40,11 +40,28 @@ require_once 'PEAR.php';
  
 PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, create_function('$error', 'var_dump($error); exit();'));
  
-$releaseVersion = '0.1.0';
+$releaseVersion = '0.2.0';
 $releaseStability = 'beta';
-$apiVersion = '0.1.0';
+$apiVersion = '0.2.0';
 $apiStability = 'beta';
-$notes = 'The first release of Stagehand_PHP_Class_Parser.';
+$notes = 'What\'s New in Stagehand_PHP_Lexer 0.2.0
+
+ A new method: parseContents()
+
+  Adds a new method: support for parsing from text content of PHP script. Stagehand_PHP_Class_Parser could parse only a PHP file in previous versions.
+
+   $code = <<<PHP_CODE
+   <?php
+   class ExampleClass
+   {
+       public $attribute;
+
+       public function doSomeMethod() { }
+   }
+   PHP_CODE;
+
+   $class = Stagehand_PHP_Class_Parser::parseContents($code);
+';
  
 $package = new PEAR_PackageFileManager2();
 $package->setOptions(array('filelistgenerator' => 'file',
@@ -62,8 +79,8 @@ $package->setOptions(array('filelistgenerator' => 'file',
  
 $package->setPackage('Stagehand_PHP_Class_Parser');
 $package->setPackageType('php');
-$package->setSummary('A parser for PHP classes written in file');
-$package->setDescription('Stagehand_PHP_Class_Parser provides features of parsing PHP classes writtern in file and mapping to Stagehand_PHP_Class meta objects.');
+$package->setSummary('A parser for PHP classes');
+$package->setDescription('Stagehand_PHP_Class_Parser provides features of parsing PHP classes and mapping to Stagehand_PHP_Class meta objects.');
 $package->setChannel('pear.piece-framework.com');
 $package->setLicense('BSD License (revised)', 'http://www.opensource.org/licenses/bsd-license.php');
 $package->setAPIVersion($apiVersion);
@@ -76,7 +93,7 @@ $package->setPearinstallerDep('1.4.3');
 $package->addMaintainer('lead', 'kumatch', 'KUMAKURA Yousuke', 'kumatch@gmail.com');
 $package->addGlobalReplacement('package-info', '@package_version@', 'version');
 $package->addPackageDepWithChannel('required', 'Stagehand_PHP_Parser', 'pear.piece-framework.com', '0.1.0');
-$package->addPackageDepWithChannel('required', 'Stagehand_PHP_Lexer', 'pear.piece-framework.com', '0.1.0');
+$package->addPackageDepWithChannel('required', 'Stagehand_PHP_Lexer', 'pear.piece-framework.com', '0.2.0');
 $package->addPackageDepWithChannel('required', 'Stagehand_PHP_Class', 'pear.piece-framework.com', '0.1.0');
 $package->addPackageDepWithChannel('required', 'Stagehand_Autoload', 'pear.piece-framework.com', '0.3.0');
 $package->generateContents();
